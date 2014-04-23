@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+
+  ul
+        each video, i in importedvideos
+            li
+                p= video.filepath
+                img(src=video.thumbpath)
