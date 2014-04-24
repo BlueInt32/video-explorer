@@ -1,0 +1,67 @@
+@import "mixin.less";
+
+@linkColor: #00B7FF;
+@linkOverColor : #FFF;
+@grayedOut : #999;
+
+
+body
+{
+    padding: 50px;
+    font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+a
+{
+    color: @linkColor;
+}
+
+ul.filesList
+{
+
+    width: 33%;
+    .borderradius(5px);
+    list-style: none;
+   li
+   {
+
+        a.folderPath, a.filePath
+        {
+            font-size:1.2em;
+            display:block;
+            padding: 5px 0 0 4px;
+            text-decoration: none;
+            .borderradius(3px);
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+
+            &:hover
+            {
+                background-color:@linkColor;
+                color:@linkOverColor;
+            }
+
+            &.folderPath::before
+            {
+                content: url(../images/icons/folder_icon.png);
+                margin-right:4px;
+            }
+            &.filePath::before
+            {
+                 content: url(../images/icons/vlc_icon_small.png);
+                margin-right:4px;
+            }
+            &.imported
+            {
+                color:@grayedOut;
+                &:hover
+                {
+                    background-color:white;
+                    color:@grayedOut;
+                    cursor:default;
+                }
+            }
+        }
+    }
+}

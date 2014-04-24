@@ -1,13 +1,14 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1= 'Import files !'
 
-  ul
+  ul.filesList
         each file in model
             li
                 if file.isDir
-                    a(href="importer?path="+file.display)= file.display
+                    a.folderPath(href="importer?path="+file.relativePath, title=file.display)= file.display
+                else if file.imported
+                    a.filePath.imported(href="", title=file.display)= file.display
                 else
-                    a(href="importer?import="+file.display)= file.display
+                    a.filePath(href="importer?import="+file.relativePath, title=file.display)= file.display

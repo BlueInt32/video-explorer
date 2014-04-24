@@ -2,46 +2,58 @@ var fs = require('fs');
 
 var basePath = "E:/Simon/Git/NodeJs/videoExplorer/vids/";
 
-var list = [];
+var list = []; // list of current files/folders to display in the current directory.
 var subFoldersNames = []; // if in subfolders like sub1/sub3/vids/, array will be ["sub1","sub3","vids"], this could be useless actually
+var currentRelativePath = "";
 
+// path is basePath + parentDirs + visibleDir
 
-var resolveCurrentLocation = function(callback)
+var resolveLocation = function(folderPath, callback)
 {
-    list = [];
-    // Build new path :
-    var newPath = basePath  + subFoldersNames.join("/");
+    if(folderPath !== "" && typeof folderPath !== 'undefined')
+        subFoldersNames = folderPath.replace(/^\/|\/$/g, '').split("/"); // we trim "/" from the input folderPath and create a clean array
+    else
+        subFoldersNames = [];
 
-    if(subFoldersNames.length) // in subdir
+    if(subFoldersNames[subFoldersNames.length - 1] === "..") // we handle the "go up" token
     {
-        list.push({display: "..", isDir:true});
+        if(subFoldersNames.length < 2) // cannot go up if already in root dir
+        {
+            subFoldersNames = [];
+        }
+        subFoldersNames.splice(subFoldersNames.length - 2, 2);
     }
 
-    var files = fs.readdirSync(newPath);
-    if (!files.length)
-          list = [];
+    list = [];
+    // Build new path :
+    var relativePath = subFoldersNames.join("/");
+
+    var fullPath = basePath + relativePath;
+    if(subFoldersNames.length) // in subdir
+    {
+        list.push({display: "..",relativePath : relativePath + "/..", isDir:true});
+    }
+    var files = fs.readdirSync(fullPath);
+    files.sort(function(a, b)
+    {
+        return !fs.statSync(fullPath +"/"+ a).isDirectory() && fs.statSync(fullPath +"/"+ b).isDirectory();
+    });
     for (var i = 0, l = files.length ; i < l; i++)
     {
         var fileName = files[i];
-        var resultStat = fs.statSync(newPath + '/' + fileName);
-        list.push({display: fileName + (resultStat.isDirectory() ? '/': ''), isDir:resultStat.isDirectory()});
+        var resultStat = fs.statSync(fullPath + "/" + fileName);
+        list.push
+        (
+            {
+                display: fileName + (resultStat.isDirectory() ? '/': ''),
+                relativePath : (relativePath + "/" + files[i]).replace(/^\/|\/$/g, ''),
+                isDir:resultStat.isDirectory(),
+                fullPath : (basePath + relativePath + files[i]).replace(/^\/|\/$/g, '')
+            }
+        );
     }
     callback.call(null, list);
 }
 
-var goIntoFolder = function(folderName, callback)
-{
-    if(typeof folderName !== 'undefined')
-        subFoldersNames.push(folderName);
-    resolveCurrentLocation(callback);
-}
-
-var upFolder = function(callback)
-{
-    subFoldersNames.splice(subFoldersNames.length - 1, 1);
-    resolveCurrentLocation(callback);
-}
-
-module.exports.goIntoFolder = goIntoFolder;
-module.exports.upFolder = upFolder;
+module.exports.resolveLocation = resolveLocation;
 module.exports.basePath = basePath;

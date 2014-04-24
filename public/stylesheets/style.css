@@ -1,8 +1,1 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
-
-a {
-  color: #00B7FF;
-}
+body{padding:50px;font:16px "Lucida Grande",Helvetica,Arial,sans-serif}a{color:#00b7ff}ul.filesList{width:33%;border-radius:5px;-webkit-border-radius:5px;-moz-border-radius:5px;list-style:none}ul.filesList li a.folderPath,ul.filesList li a.filePath{font-size:1.2em;display:block;padding:5px 0 0 4px;text-decoration:none;border-radius:3px;-webkit-border-radius:3px;-moz-border-radius:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}ul.filesList li a.folderPath:hover,ul.filesList li a.filePath:hover{background-color:#00b7ff;color:#fff}ul.filesList li a.folderPath.folderPath::before,ul.filesList li a.filePath.folderPath::before{content:url(../images/icons/folder_icon.png);margin-right:4px}ul.filesList li a.folderPath.filePath::before,ul.filesList li a.filePath.filePath::before{content:url(../images/icons/vlc_icon_small.png);margin-right:4px}ul.filesList li a.folderPath.imported,ul.filesList li a.filePath.imported{color:#999}ul.filesList li a.folderPath.imported:hover,ul.filesList li a.filePath.imported:hover{background-color:white;color:#999;cursor:default}
