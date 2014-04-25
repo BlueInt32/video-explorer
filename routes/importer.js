@@ -1,11 +1,14 @@
 var express = require('express'),
 extractor = require('./../extractor'),
-jsExplorer = require('./../jsExplorer')
-;
+jsExplorer = require('./../jsExplorer'),
+pathHelper = require('./../PathHelper'),
+config = require('./../config');
 
 var router = express.Router();
 
 var directoryContent;
+
+pathHelper.setBasePath(config.BASEVIDEOSPATH);
 
 /* GET home page. */
 router.get('/', function(req, res)
@@ -16,21 +19,6 @@ router.get('/', function(req, res)
     var db = req.db;
     var collection = db.get('importedvideos');
 
-    if(typeof importPath !== 'undefined')
-    {
-        // Set our collection
-
-        console.log('looking for : ', jsExplorer.basePath + importPath);
-        collection.find({filepath:jsExplorer.basePath + importPath},{},function(e,docs){
-            //if(docs.length)
-        });
-
-
-        
-
-
-
-    }
     jsExplorer.resolveLocation(queryPath, function(returnedList)
     {
         // extract fullpaths of files in the current dir.
@@ -39,22 +27,22 @@ router.get('/', function(req, res)
             paths.push(returnedList[i].fullPath);
         };
 
-        console.log('returnedList : ', returnedList);
         // find in db files for which fullpath is in the extract
-        collection.find({filepath:{$in:paths}},{},function(e,docs)
+        collection.find({fullPath:{$in:paths}},{},function(e,docs)
         {
             for (var i = 0, l = docs.length; i < l; i++) {
                 for (var j = 0, k = returnedList.length; j < k; j++) {
-                    console.log(returnedList[j].fullPath, docs[i].filepath);
-                    if(returnedList[j].fullPath === docs[i].filepath)
+                    console.log(returnedList[j].fullPath,decodeURIComponent(docs[i].fullPath));
+                    if(returnedList[j].fullPath === decodeURIComponent(docs[i].fullPath))
+                    {
+                        returnedList[j].imported = true;
+                    }
+                    else
                     {
 
-                        returnedList[j].imported = true;
                     }
                 };
             };
-
-
 
             directoryContent = returnedList;
             res.render('importer', {model: directoryContent});
@@ -70,10 +58,18 @@ router.get('/choice', function(req, res)
 
     var db = req.db;
     var collection = db.get('importedvideos');
-    // // Submit to the DB
+    var decodedPath = pathHelper.urlDecode(queryPath);
+    var fileName = pathHelper.extractFileName(decodedPath);
+    var imgFilePath = pathHelper.combine(config.BASEPATH, pathHelper.combine(config.REALTHUMBSPATH, fileName + ".jpg"));
+    extractor.create(decodedPath, imgFilePath, "00:00:02", '200x125', function(error, stdout, stderr)
+    {
+        console.log(error);
         collection.insert({
-            "fullPath" : queryPath,
-            "email" : userEmail
+            "fullPath" : decodedPath,
+            "insert" : (new Date()).toUTCString(),
+            "stars": 0,
+            "thumbPath": fileName+ ".jpg",
+            "tags" : ""
         }, function (err, doc) {
             if (err) {
                 // If it failed, return error
@@ -81,11 +77,12 @@ router.get('/choice', function(req, res)
             }
             else {
                 // If it worked, set the header so the address bar doesn't still say /adduser
-                res.location("importer");
+                res.location("/");
                 // And forward to success page
-                res.redirect("importer");
+                res.redirect("/");
             }
         });
+    });
 
 });
 

@@ -3,9 +3,9 @@ extends layout
 block content
   h1= title
   p Welcome to #{title}
-
-  ul
+  a(href="importer") Import Videos
+  ul.vids
         each video, i in importedvideos
-            li
-                p= video.filepath
-                img(src=video.thumbpath)
+            li.vidItem
+                a(href="#" title=video.fullPath)
+                    img(src=pathToThumbs + '/' +video.thumbPath)

@@ -15,7 +15,8 @@
     "debug": "~0.7.4",
     "jade": "~1.3.0",
     "mongodb": "*",
-    "monk": "*"
+    "monk": "*",
+    "chai": "~1.9.1"
   },
   "devDependencies": {
     "grunt": "~0.4.4",

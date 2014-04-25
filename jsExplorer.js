@@ -1,6 +1,6 @@
-var fs = require('fs');
-
-var basePath = "E:/Simon/Git/NodeJs/videoExplorer/vids/";
+var fs = require('fs'),
+pathHelper = require('./PathHelper'),
+config = require('./config');
 
 var list = []; // list of current files/folders to display in the current directory.
 var subFoldersNames = []; // if in subfolders like sub1/sub3/vids/, array will be ["sub1","sub3","vids"], this could be useless actually
@@ -10,25 +10,21 @@ var currentRelativePath = "";
 
 var resolveLocation = function(folderPath, callback)
 {
+    pathHelper.setBasePath(config.BASEVIDEOSPATH);
+
     if(folderPath !== "" && typeof folderPath !== 'undefined')
-        subFoldersNames = folderPath.replace(/^\/|\/$/g, '').split("/"); // we trim "/" from the input folderPath and create a clean array
+    {
+        subFoldersNames = pathHelper.processUpFolder(folderPath).split("/"); // we trim "/" from the input folderPath and create a clean array
+    }
     else
         subFoldersNames = [];
-
-    if(subFoldersNames[subFoldersNames.length - 1] === "..") // we handle the "go up" token
-    {
-        if(subFoldersNames.length < 2) // cannot go up if already in root dir
-        {
-            subFoldersNames = [];
-        }
-        subFoldersNames.splice(subFoldersNames.length - 2, 2);
-    }
 
     list = [];
     // Build new path :
     var relativePath = subFoldersNames.join("/");
 
-    var fullPath = basePath + relativePath;
+    var fullPath = pathHelper.toAbsolute(relativePath);
+    console.log('fullPath : ', fullPath);
     if(subFoldersNames.length) // in subdir
     {
         list.push({display: "..",relativePath : relativePath + "/..", isDir:true});
@@ -48,7 +44,7 @@ var resolveLocation = function(folderPath, callback)
                 display: fileName + (resultStat.isDirectory() ? '/': ''),
                 relativePath : (relativePath + "/" + files[i]).replace(/^\/|\/$/g, ''),
                 isDir:resultStat.isDirectory(),
-                fullPath : (basePath + relativePath + files[i]).replace(/^\/|\/$/g, '')
+                fullPath : pathHelper.urlEncode(pathHelper.combine(fullPath,files[i]))
             }
         );
     }
@@ -56,4 +52,3 @@ var resolveLocation = function(folderPath, callback)
 }
 
 module.exports.resolveLocation = resolveLocation;
-module.exports.basePath = basePath;

@@ -2,7 +2,7 @@ extends layout
 
 block content
   h1= 'Import files !'
-
+  a(href="/") Accueil
   ul.filesList
         each file in model
             li
@@ -11,7 +11,7 @@ block content
                 else if file.imported
                     a.filePath.imported(href="", title=file.display, rel=file.fullPath)= file.display
                 else
-                    a.filePath(href="importer/choice?path=foo", title=file.display, rel=file.fullPath)= file.display
+                    a.filePath(href="importer/choice?path="+file.fullPath, title=file.display, rel=file.fullPath)= file.display
         script.
             $(function()
             {   
