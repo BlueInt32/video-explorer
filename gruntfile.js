@@ -18,7 +18,7 @@
 			},
 			dbtaff: 
 			{
-				command: 'E:/Simon/Git/_Mongo/bin/mongod.exe --dbpath E:/Simon/Git/_Mongo/data/db',
+				command: 'E:/Simon/Git/_Mongo/bin/mongod.exe --dbpath E:/Simon/Git/_Mongo/data',
 				options: 
 				{
                 	stdout: true

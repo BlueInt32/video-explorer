@@ -13,7 +13,7 @@ router.get('/', function(req, res)
     var queryPath = req.query.path;
     var importPath = req.query.import;
 
-        var db = req.db;
+    var db = req.db;
     var collection = db.get('importedvideos');
 
     if(typeof importPath !== 'undefined')
@@ -26,22 +26,7 @@ router.get('/', function(req, res)
         });
 
 
-        // // Submit to the DB
-        // collection.insert({
-        //     "username" : userName,
-        //     "email" : userEmail
-        // }, function (err, doc) {
-        //     if (err) {
-        //         // If it failed, return error
-        //         res.send("There was a problem adding the information to the database.");
-        //     }
-        //     else {
-        //         // If it worked, set the header so the address bar doesn't still say /adduser
-        //         res.location("userlist");
-        //         // And forward to success page
-        //         res.redirect("userlist");
-        //     }
-        // });
+        
 
 
 
@@ -76,6 +61,32 @@ router.get('/', function(req, res)
         });
 
     });
+});
+
+router.get('/choice', function(req, res)
+{
+    var queryPath = req.query.path;
+
+
+    var db = req.db;
+    var collection = db.get('importedvideos');
+    // // Submit to the DB
+        collection.insert({
+            "fullPath" : queryPath,
+            "email" : userEmail
+        }, function (err, doc) {
+            if (err) {
+                // If it failed, return error
+                res.send("There was a problem adding the information to the database.");
+            }
+            else {
+                // If it worked, set the header so the address bar doesn't still say /adduser
+                res.location("importer");
+                // And forward to success page
+                res.redirect("importer");
+            }
+        });
+
 });
 
 

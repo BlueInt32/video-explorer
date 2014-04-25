@@ -9,6 +9,14 @@ block content
                 if file.isDir
                     a.folderPath(href="importer?path="+file.relativePath, title=file.display)= file.display
                 else if file.imported
-                    a.filePath.imported(href="", title=file.display)= file.display
+                    a.filePath.imported(href="", title=file.display, rel=file.fullPath)= file.display
                 else
-                    a.filePath(href="importer?import="+file.relativePath, title=file.display)= file.display
+                    a.filePath(href="importer/choice?path=foo", title=file.display, rel=file.fullPath)= file.display
+        script.
+            $(function()
+            {   
+                $(".filePath").click(function()
+                {
+                    console.log($(this).attr("rel"));
+                });
+            })
