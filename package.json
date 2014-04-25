@@ -19,6 +19,8 @@
   },
   "devDependencies": {
     "grunt": "~0.4.4",
-    "grunt-express": "~1.2.1"
+    "grunt-express": "~1.2.1",
+    "grunt-shell": "~0.6.4",
+    "grunt-contrib-watch": "~0.6.1"
   }
 }

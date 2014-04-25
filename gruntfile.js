@@ -3,21 +3,44 @@
 
 	require('load-grunt-tasks')(grunt);
 	// Project configuration.
-	grunt.initConfig({
-	   express: {
-			server: {
-				options:
+	grunt.initConfig(
+	{
+	   shell: 
+	   {
+			dbhome: 
+			{
+				command: 'D:/Prog/Git/_Mongo/bin/mongod.exe --dbpath D:/Prog/Git/_Mongo/data/db',
+				options: 
 				{
-					port: 9000,
-					bases: 'public'
-					}
+                	stdout: true
+            	}
+            	
+			},
+			dbtaff: 
+			{
+				command: 'E:/Simon/Git/_Mongo/bin/mongod.exe --dbpath E:/Simon/Git/_Mongo/data/db',
+				options: 
+				{
+                	stdout: true
+            	}
+            	
+			}
+    	},
+    	express: 
+    	{
+			dev: 
+			{
+				options: 
+				{
+					script: './app.js'
 				}
 			}
-	});
-
-  grunt.loadNpmTasks('grunt-express');
-	});
+		}
+    });
 
 
-	grunt.registerTask('default', ['jshint', 'uglify:dist', 'copy', 'processhtml', 'replace']);
+
+	grunt.registerTask('default', ['express:dev', 'express-keepalive']);
+	grunt.registerTask('dbhome', ['shell:dbhome']);
+	grunt.registerTask('dbtaff', ['shell:dbtaff']);
 };
